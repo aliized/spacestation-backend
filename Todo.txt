@@ -1,0 +1,44 @@
+what we need:
+backend:
+    1- users
+    2- posts with category: dictionary & blog ...
+    3- comments
+    4- books
+    5- movies
+    6- Create 
+front: 
+    1- login page
+    2- blog page
+    3- post page
+    4- dashboard
+    5- icons
+
+======================================================
+
+controllers:
+posts, books, movies:
+    get single, get all, get comments, post comments, get capcha for comments
+
+dashboard:
+post delete put for: blog, book, movies + image uploader
+
+users:
+post login, post forgetpass, post resetpass:token, post signup
+
+=====================================================
+
+marahel:
+1- sakhte app.js
+    1.1- confige env va database va etesaleshun 
+    1.2- motasel kardan va moarefie folder haye public o uploads
+2- sakhte routes hayi ke tu app.js estefade krdim
+
+
+3- kamel kardane route ha va chizayi ke azashun mikhaym
+4- sakhte model ha vase estefade dakhele controller ha
+5- sakhte controller vase mavarede bakhshe 3 ba estefade az model ha
+    5.1- rafe niaz hayi mesle mailer o multer ba utils sakhtan barashun
+    5.2- sakhte middleware haye kamel konandeye restAPI: auth o error handle o header haye morede ghabul
+
+
+    
