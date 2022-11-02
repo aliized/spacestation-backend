@@ -2,11 +2,13 @@ const path = require("path");
 
 const dotEnv = require("dotenv");
 const express = require("express");
+
 const fileUpload = require("express-fileupload");
 
 
 const connectDB = require("./config/db");
-// const { setHeaders } = require("./middlewares/headers");
+const { errorHandler } = require("./middlewares/errors");
+const { setHeaders } = require("./middlewares/headers");
 
 
 //* Load Config
@@ -21,7 +23,7 @@ const app = express();
 //* BodyPaser
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-//app.use(setHeaders);
+app.use(setHeaders);
 
 
 
@@ -34,19 +36,18 @@ app.use(express.static(path.join(__dirname, "public")));
 
 
 //* Routes
-app.get("/",require('./routes/blog'))
-app.use((req,res)=>{
-    console.log("404");
-    res.send("404")
-})
-// app.use("/", require("./routes/blog"));
+
+app.use("/", require("./routes/blog"));
+app.use("/", require("./routes/statics"));
+app.use("/admin", require("./routes/admin"));
+
 // app.use("/users", require("./routes/users"));
 // app.use("/dashboard", require("./routes/dashboard"));
 
 
-
 //* Error Controller
-//app.use(errorHandler);
+app.use((req,res)=>{res.send("404! NOT FOUND")});
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
 

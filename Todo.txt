@@ -35,10 +35,121 @@ marahel:
 
 
 3- kamel kardane route ha va chizayi ke azashun mikhaym
+
 4- sakhte model ha vase estefade dakhele controller ha
+    4.1- sakhte schema ba yup
+    4.2- sakhte schema ba mongoose
 5- sakhte controller vase mavarede bakhshe 3 ba estefade az model ha
     5.1- rafe niaz hayi mesle mailer o multer ba utils sakhtan barashun
     5.2- sakhte middleware haye kamel konandeye restAPI: auth o error handle o header haye morede ghabul
 
 
+
+
+========================================
+
+                < / >
     
+    //!  @desc   Weblog Index Page
+    //!  @route  GET /blog
+/blogindex
+get all posts
+
+    //!  @desc   movies Index Page
+    //!  @route  GET /movies
+/moviesindex
+get all movies with description
+
+
+
+    //!  @desc   books Index Page
+    //!  @route  GET /books
+/bookindex
+get all books with description
+
+
+    //!  @desc   photos Index Page
+    //!  @route  GET /gallery
+/galleryindex
+get all photoes [ maybe with desc]
+    
+
+    //!  @desc   weblog post Page
+    //!  @route  GET /post/:id
+/post/:id
+   
+
+    //!  @desc   handle post comment
+    //!  @route  POST /post/:id/comment
+/post/:id/comment
+
+
+========================================
+                < statics >
+                
+    //  @desc   handle contact us
+    //  @route  GET /
+/contact-us
+
+
+ 
+(no backend needed):
+
+    //  @desc   about us Page
+    //  @route  GET /
+/about-us
+& home page
+
+========================================
+                < /users >
+
+    //  @desc   handle register
+    //  @route  POST /users/register
+/register
+
+
+    //  @desc   handle login
+    //  @route  POST /users/login
+/login
+
+
+    //  @desc   handle forget password
+    //  @route  POST /users/forget-password
+/forget-password
+
+
+    //  @desc   handle reset password
+    //  @route  POST /users/reset-password/:token
+/reset-password/:token
+
+
+
+
+========================================
+                < /dashboard >?????????
+    //  @desc   movies Index Page
+    //  @route  POST /
+/dashboard
+
+
+
+========================================
+                < /admin >
+        [for post,photo,book,movie]
+ 
+    //  @desc   Dashboard Handle Post Creation
+    //  @route  POST /admin/add-post
+/add-post
+
+    //  @desc   Dashboard Handle Image Upload
+    //  @route  POST /admin/image-upload
+/image-upload
+
+    //  @desc   Dashboard Handle Post Edit
+    //  @route  POST /admin/edit-post/:id
+/edit-post/:id
+
+    //  @desc   Dashboard Delete Post
+    //  @route  GET /admin/delete-post/:id
+/delete-post/:id
+

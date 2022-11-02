@@ -1,7 +1,25 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const Yup = require("yup");
 
-const { schema } = require("./secure/userValidation");
+
+userValidator = Yup.object().shape({
+    username: Yup.string()
+      .required("نام کاربری الزامی میباشد")
+      .min(4, "کوتاه")
+      .max(50, "بلند"),
+    email: Yup.string()
+      .email("ایمیل معتبر نمی باشد")
+      .required("ایمیل الزامی می باشد"),
+    password: Yup.string()
+      .min(4, "کلمه عبور نباید کمتر از 4 کاراکتر باشد")
+      .max(255, "کلمه عبور نباید بیشتر از 255 کاراکتر باشد")
+      .required("کلمه عبور الزامی می باشد"),
+    confirmPassword: Yup.string()
+      .required("تکرار کلمه عبور الزامی می باشد")
+      .oneOf([Yup.ref("password"), null], "کلمه های عبور یکسان نیستند"),
+  });
+
 
 const userSchema = new mongoose.Schema({
     fullname: {
@@ -26,8 +44,10 @@ const userSchema = new mongoose.Schema({
     },
 });
 
+  
+
 userSchema.statics.userValidation = function (body) {
-    return schema.validate(body, { abortEarly: false });
+    return userValidator.validate(body, { abortEarly: false });
 };
 
 userSchema.pre("save", function (next) {
