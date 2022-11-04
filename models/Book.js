@@ -31,6 +31,10 @@ const bookSchema = new mongoose.Schema({
     minlength: 5,
     maxlength: 100,
   },
+  writer: {
+    type: String,
+    required: true,
+  },
   body: {
     type: String,
     required: true,
