@@ -54,12 +54,9 @@
 //   },
 // });
 
-// //* for search indexing e125
-// postSchema.index({ title: "text" });
-
 // //* add Yup validation method to mongoose statics
 // postSchema.statics.validation = function (body) {
 //   return postValidator.validate(body, { abortEarly: false });
 // };
 
-// module.exports = mongoose.model("Post", postSchema);
+// module.exports = mongoose.model("Comment", postSchema);
