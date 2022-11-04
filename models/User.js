@@ -6,14 +6,14 @@ const Yup = require("yup");
 userValidator = Yup.object().shape({
     username: Yup.string()
       .required("نام کاربری الزامی میباشد")
-      .min(4, "کوتاه")
-      .max(50, "بلند"),
+      .min(4, "نام کاربری نباید کمتر از 4 کاراکتر باشد")
+      .max(50, "نام کاربری نباید بیشتر از 50 کاراکتر باشد"),
     email: Yup.string()
       .email("ایمیل معتبر نمی باشد")
       .required("ایمیل الزامی می باشد"),
     password: Yup.string()
-      .min(4, "کلمه عبور نباید کمتر از 4 کاراکتر باشد")
-      .max(255, "کلمه عبور نباید بیشتر از 255 کاراکتر باشد")
+      .min(8, "کلمه عبور نباید کمتر از 8 کاراکتر باشد")
+      .max(40, "کلمه عبور نباید بیشتر از 40 کاراکتر باشد")
       .required("کلمه عبور الزامی می باشد"),
     confirmPassword: Yup.string()
       .required("تکرار کلمه عبور الزامی می باشد")
@@ -22,10 +22,11 @@ userValidator = Yup.object().shape({
 
 
 const userSchema = new mongoose.Schema({
-    fullname: {
+    username: {
         type: String,
-        required: [true, "نام و نام خانوادگی الزامی می باشد"],
+        required: [true, "نام کاربری الزامی می باشد"],
         trim: true,
+        unique: true,
     },
     email: {
         type: String,
@@ -35,8 +36,8 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-        minlength: 4,
-        maxlength: 255,
+        minlength: 8,
+        maxlength: 40,
     },
     createdAt: {
         type: Date,
