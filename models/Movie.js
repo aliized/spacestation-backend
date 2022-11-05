@@ -7,7 +7,14 @@ const movieValidator = Yup.object().shape({
     .required("نام فیلم الزامی می باشد")
     .min(5, "نام فیلم نباید کمتر از 5 کارکتر باشد")
     .max(100, "نام فیلم نباید بیشتر از 100 کاراکتر باشد"),
+
   body: Yup.string().required("لطفا محتوایی درباره ی فیلم وارد کنید"),
+  directors: Yup.string().required("نام کارگردان الزامی می باشد"),
+
+  writers: Yup.string().required("نام نویسندگان الزامی می باشد"),
+
+  actors: Yup.string().required("نام بازیگران الزامی می باشد"),
+
   thumbnail: Yup.object().shape({
     name: Yup.string().required("عکس فیلم الزامی می باشد"),
     size: Yup.number().max(3 * 1000000, "عکس نباید بیشتر از 3 مگابایت باشد"),
@@ -16,6 +23,7 @@ const movieValidator = Yup.object().shape({
       "تنها پسوندهای png و jpeg پشتیبانی می شوند"
     ),
   }),
+  
   status: Yup.mixed().oneOf(
     ["private", "public"],
     "یکی از 2 وضعیت خصوصی یا عمومی را انتخاب کنید"
@@ -39,7 +47,7 @@ const movieSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  Actors: {
+  actors: {
     type: String,
     required: true,
   },

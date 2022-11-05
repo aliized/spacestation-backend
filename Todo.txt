@@ -43,6 +43,50 @@ marahel:
     5.1- rafe niaz hayi mesle mailer o multer ba utils sakhtan barashun
     5.2- sakhte middleware haye kamel konandeye restAPI: auth o error handle o header haye morede ghabul
 
+========================================
+=========adminController:
+//* Create Post ✔️
+//? Update Post ✔️
+//! Delete Post ✔️
+
+//* Create Movie ✔️
+//? Update Movie
+//! Delete Movie
+
+//* Create Book
+//? Update Book
+//! Delete Book
+
+//* Create Gallery
+//? Update Gallery
+//! Delete Gallery
+
+=========blogController:
+
+//% GET HomePageIndex
+//% GET Index ✔️
+//% GET single post ✔️
+//% GET movies
+//% GET books
+//% GET gallery
+//* POST Comment
+//? PUT Comment
+//! DELETE Comment
+//% GET Comments
+
+=========userController:
+//* Create User POST /register
+//? Update User PUT
+//! Delete User DELETE
+//? login
+//? POST forgetpass
+//? POST forgetpass/:TOKEN
+
+=========ststics:
+//? POST contact-us
+//? POST / PUT about-us
+
+
 
 
 

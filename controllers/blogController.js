@@ -1,9 +1,24 @@
+//% GET HomePageIndex
+//% GET Index ✔️
+//% GET single post ✔️
+//% GET movies
+//% GET books
+//% GET gallery
+//* POST Comment
+//? PUT Comment
+//! DELETE Comment
+//% GET Comments
+
+
 const Yup = require("yup");
 //const captchapng = require("captchapng");
 const Posts = require("../models/Post");
 //const { sendEmail } = require("../utils/mailer");
 
 let CAPTCHA_NUM;
+
+
+
 
 exports.getIndex = async (req, res, next) => {
   try {
