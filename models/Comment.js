@@ -2,12 +2,12 @@ const mongoose = require("mongoose");
 const Yup = require("Yup");
 
 //* Yup Schema
-const postValidator = Yup.object().shape({
+const commentValidator = Yup.object().shape({
   body: Yup.string().required("لطفا محتوایی برای کامنت خود وارد کنید"), 
 });
 
 //* Mongoose Schema
-const postSchema = new mongoose.Schema({
+const commentSchema = new mongoose.Schema({
   postId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Post",
@@ -32,8 +32,8 @@ const postSchema = new mongoose.Schema({
 });
 
 //* add Yup validation method to mongoose statics
-postSchema.statics.validation = function (body) {
-  return postValidator.validate(body, { abortEarly: false });
+commentSchema.statics.validation = function (body) {
+  return commentValidator.validate(body, { abortEarly: false });
 };
 
-module.exports = mongoose.model("Comment", postSchema);
+module.exports = mongoose.model("Comment", commentSchema);

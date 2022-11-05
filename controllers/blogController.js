@@ -1,50 +1,50 @@
 const Yup = require("yup");
 //const captchapng = require("captchapng");
-const Blog = require("../models/Post");
+const Posts = require("../models/Post");
 //const { sendEmail } = require("../utils/mailer");
 
 let CAPTCHA_NUM;
 
 exports.getIndex = async (req, res, next) => {
-    console.log("dd")}
-    // try {
-    //     const numberOfPosts = await Blog.find({
-    //         status: "public",
-    //     }).countDocuments();
+  try {
+    const numberOfPosts = await Posts.find({
+      status: "public",
+    }).countDocuments();
 
-    //     const posts = await Blog.find({ status: "public" }).sort({
-    //         createdAt: "desc",
-    //     });
+    const posts = await Posts.find({ status: "public" }).sort({
+      createdAt: "desc",
+    });
 
-    //     if (!posts) {
-    //         const error = new Error("هیچ پستی در پایگاه داده ثبت نشده است");
-    //         error.statusCode = 404;
-    //         throw error;
-    //     }
+    if (!posts) {
+      const error = new Error("هیچ پستی در پایگاه داده ثبت نشده است");
+      error.statusCode = 404;
+      throw error;
+    }
 
-    //     res.status(200).json({ posts, total: numberOfPosts });
-    // } catch (err) {
-    //     next(err);
-    // }
-//};
+    res.status(200).json({ posts, total: numberOfPosts });
+  } catch (err) {
+    next(err);
+  }
+};
 
-// exports.getSinglePost = async (req, res, next) => {
-//     try {
-//         const post = await Blog.findOne({ _id: req.params.id }).populate(
-//             "user"
-//         );
+exports.getSinglePost = async (req, res, next) => {
+  try {
+    const post = await Posts.findOne({ _id: req.params.id, status: "public" });
+    //???????? .populate(
+    //     "user"
+    // );
 
-//         if (!post) {
-//             const error = new Error("پستی با این شناسه یافت نشد");
-//             error.statusCode = 404;
-//             throw error;
-//         }
+    if (!post) {
+      const error = new Error("پستی با این شناسه یافت نشد");
+      error.statusCode = 404;
+      throw error;
+    }
 
-//         res.status(200).json({ post });
-//     } catch (err) {
-//         next(err);
-//     }
-// };
+    res.status(200).json({ post });
+  } catch (err) {
+    next(err);
+  }
+};
 
 // exports.handleContactPage = async (req, res, next) => {
 //     const { fullname, email, message } = req.body;
