@@ -14,7 +14,7 @@ const Post = require("../../models/Post");
 exports.createPost = async (req, res, next) => {
   let thumbnail, parsedName, fileName, uploadPath;
 
-  if (req.files.thumbnail) {
+  if (req.files && req.files.thumbnail) {
     thumbnail = req.files.thumbnail;
     parsedName = path.parse(thumbnail.name);
     fileName = `${parsedName.name}_${shortId.generate()}${parsedName.ext}`;
@@ -53,7 +53,7 @@ exports.createPost = async (req, res, next) => {
 exports.editPost = async (req, res, next) => {
   try {
     let thumbnail, parsedName, fileName, uploadPath;
-    if (req.files.thumbnail) {
+    if (req.files && req.files.thumbnail) {
       thumbnail = req.files.thumbnail;
       parsedName = path.parse(thumbnail.name);
       fileName = `${parsedName.name}_${shortId.generate()}${parsedName.ext}`;
@@ -76,7 +76,7 @@ exports.editPost = async (req, res, next) => {
       error.statusCode = 401;
       throw error;
     } else {
-      if (req.files.thumbnail) {
+      if (req.files && req.files.thumbnail) {
         fs.unlink(
           `${appRoot}/public/uploads/thumbnails/${post.thumbnail}`,
           async (err) => {
@@ -135,3 +135,52 @@ exports.deletePost = async (req, res, next) => {
     next(err);
   }
 };
+
+
+
+// const fs = require("fs");
+// const path = require("path");
+
+// // const multer = require("multer");
+// const sharp = require("sharp");
+// const shortId = require("shortid");
+// const appRoot = require("app-root-path");
+
+// const Post = require("../models/Post");
+// const Movie = require("../models/Movie");
+// //const { fileFilter } = require("../utils/multer");
+
+// // exports.uploadImage = (req, res) => {
+// //   const upload = multer({
+// //     limits: { fileSize: 4000000 },
+// //     fileFilter: fileFilter,
+// //   }).single("image");
+
+// //   upload(req, res, async (err) => {
+// //     if (err) {
+// //       if (err.code === "LIMIT_FILE_SIZE") {
+// //         return res.status(422).json({
+// //           error: "حجم عکس ارسالی نباید بیشتر از 4 مگابایت باشد",
+// //         });
+// //       }
+// //       res.status(400).json({ error: err });
+// //     } else {
+// //       if (req.files.thumbnail) {
+// //         const fileName = `${shortId.generate()}_${req.files.image.name}`;
+// //         await sharp(req.files.image.data)
+// //           .jpeg({
+// //             quality: 100,
+// //           })
+// //           .toFile(`./public/uploads/${fileName}`)
+// //           .catch((err) => console.log(err));
+// //         res.status(200).json({
+// //           image: `http://localhost:3000/uploads/${fileName}`,
+// //         });
+// //       } else {
+// //         res.status(400).json({
+// //           error: "جهت آپلود باید عکسی انتخاب کنید",
+// //         });
+// //       }
+// //     }
+// //   });
+// // };

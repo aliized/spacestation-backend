@@ -4,10 +4,10 @@ const mongoose = require("mongoose");
 const Yup = require("Yup");
 
 //* Yup Schema
-const galValidator = Yup.object().shape({
+const galleryValidator = Yup.object().shape({
   photo: Yup.object().shape({
     name: Yup.string().required("عکس الزامی می باشد"),
-    size: Yup.number().max(10*1000000, "عکس نباید بیشتر از 10 مگابایت باشد"),
+    size: Yup.number().max(10 * 1000000, "عکس نباید بیشتر از 10 مگابایت باشد"),
     mimetype: Yup.mixed().oneOf(
       ["image/jpeg", "image/png"],
       "تنها پسوندهای png و jpeg پشتیبانی می شوند"
@@ -26,12 +26,12 @@ const galValidator = Yup.object().shape({
 });
 
 //* Mongoose Schema
-const galSchema = new mongoose.Schema({
-    photo: {
-        type: String,
-        required: true,
-      },
-      photoAlt: {
+const gallerySchema = new mongoose.Schema({
+  photo: {
+    type: String,
+    required: true,
+  },
+  photoAlt: {
     type: String,
     required: true,
     trim: true,
@@ -47,11 +47,11 @@ const galSchema = new mongoose.Schema({
     default: "public",
     enum: ["private", "public"],
   },
-  
-//   user: {
-//     type: mongoose.Schema.Types.ObjectId,
-//     ref: "User",
-//   },
+
+  //   user: {
+  //     type: mongoose.Schema.Types.ObjectId,
+  //     ref: "User",
+  //   },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -59,8 +59,8 @@ const galSchema = new mongoose.Schema({
 });
 
 //* add Yup validation method to mongoose statics
-galSchema.statics.galValidation = function (body) {
-  return galValidator.validate(body, { abortEarly: false });
+gallerySchema.statics.validation = function (body) {
+  return galleryValidator.validate(body, { abortEarly: false });
 };
 
-module.exports = mongoose.model("Gallery", galSchema);
+module.exports = mongoose.model("Gallery", gallerySchema);

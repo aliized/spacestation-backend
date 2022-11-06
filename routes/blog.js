@@ -1,6 +1,6 @@
 const { Router } = require("express");
 
-const blogController = require("../controllers/blogController");
+//? const blogController = require("../controllers/blogController");
 
 const router = new Router();
 
@@ -12,7 +12,7 @@ router.get("/", (req, res) => {
 
 //  @desc   Weblog Index Page
 //  @route  GET /blog
-router.get("/blog", blogController.getIndex);
+//? router.get("/blog", blogController.getIndex);
 //get all posts
 
 //  @desc   movies Index Page
@@ -38,7 +38,7 @@ router.get("/gallery", (req, res) => {
 
 //  @desc   weblog post Page
 //  @route  GET /post/:id
-router.get("/post/:id", blogController.getSinglePost);
+//? router.get("/post/:id", blogController.getSinglePost);
 //  get single post
 
 //  @desc   add post comment
