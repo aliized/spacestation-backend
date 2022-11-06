@@ -14,7 +14,7 @@ const Post = require("../../models/Post");
 exports.createPost = async (req, res, next) => {
   let thumbnail, parsedName, fileName, uploadPath;
 
-  if (req.files.thumbnail) {
+  if (req.files && req.files.thumbnail) {
     thumbnail = req.files.thumbnail;
     parsedName = path.parse(thumbnail.name);
     fileName = `${parsedName.name}_${shortId.generate()}${parsedName.ext}`;
@@ -53,7 +53,7 @@ exports.createPost = async (req, res, next) => {
 exports.editPost = async (req, res, next) => {
   try {
     let thumbnail, parsedName, fileName, uploadPath;
-    if (req.files.thumbnail) {
+    if (req.files && req.files.thumbnail) {
       thumbnail = req.files.thumbnail;
       parsedName = path.parse(thumbnail.name);
       fileName = `${parsedName.name}_${shortId.generate()}${parsedName.ext}`;
@@ -76,7 +76,7 @@ exports.editPost = async (req, res, next) => {
       error.statusCode = 401;
       throw error;
     } else {
-      if (req.files.thumbnail) {
+      if (req.files && req.files.thumbnail) {
         fs.unlink(
           `${appRoot}/public/uploads/thumbnails/${post.thumbnail}`,
           async (err) => {

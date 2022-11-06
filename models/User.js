@@ -47,7 +47,7 @@ const userSchema = new mongoose.Schema({
 
   
 
-userSchema.statics.userValidation = function (body) {
+userSchema.statics.validation = function (body) {
     return userValidator.validate(body, { abortEarly: false });
 };
 

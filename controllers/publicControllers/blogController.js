@@ -12,7 +12,7 @@
 
 const Yup = require("yup");
 //const captchapng = require("captchapng");
-const Posts = require("../models/Post");
+const Posts = require("../../models/Post");
 //const { sendEmail } = require("../utils/mailer");
 
 let CAPTCHA_NUM;

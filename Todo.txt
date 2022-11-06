@@ -28,17 +28,15 @@ post login, post forgetpass, post resetpass:token, post signup
 =====================================================
 
 marahel:
-1- sakhte app.js
-    1.1- confige env va database va etesaleshun 
-    1.2- motasel kardan va moarefie folder haye public o uploads
-2- sakhte routes hayi ke tu app.js estefade krdim
+1- sakhte app.js ✔️
+    1.1- confige env va database va etesaleshun  ✔️
+    1.2- motasel kardan va moarefie folder haye public o uploads ✔️
+2- sakhte routes hayi ke tu app.js estefade krdim ✔️
+3- kamel kardane route ha va chizayi ke azashun mikhaym ✔️
+4- sakhte model ha vase estefade dakhele controller ha ✔️
+    4.1- sakhte schema ba yup ✔️
+    4.2- sakhte schema ba mongoose ✔️
 
-
-3- kamel kardane route ha va chizayi ke azashun mikhaym
-
-4- sakhte model ha vase estefade dakhele controller ha
-    4.1- sakhte schema ba yup
-    4.2- sakhte schema ba mongoose
 5- sakhte controller vase mavarede bakhshe 3 ba estefade az model ha
     5.1- rafe niaz hayi mesle mailer o multer ba utils sakhtan barashun
     5.2- sakhte middleware haye kamel konandeye restAPI: auth o error handle o header haye morede ghabul
@@ -50,16 +48,16 @@ marahel:
 //! Delete Post ✔️
 
 //* Create Movie ✔️
-//? Update Movie
-//! Delete Movie
+//? Update Movie ✔️
+//! Delete Movie ✔️
 
-//* Create Book
-//? Update Book
-//! Delete Book
+//* Create Book ✔️
+//? Update Book ✔️ 
+//! Delete Book ✔️
 
-//* Create Gallery
-//? Update Gallery
-//! Delete Gallery
+//* Create Gallery ✔️
+//? Update Gallery ✔️
+//! Delete Gallery ✔️
 
 =========blogController:
 
@@ -197,3 +195,15 @@ get all photoes [ maybe with desc]
     //  @route  GET /admin/delete-post/:id
 /delete-post/:id
 
+
+
+
+
+
+
+
+
+=====
+-======-=-=-=-=-=-=--=-=-=-=-=-=
+ideas:
+last edit time mese create time ezafe konam

@@ -15,7 +15,7 @@ exports.createMovie = async (req, res, next) => {
   try {
     let thumbnail, parsedName, fileName, uploadPath;
 
-    if (req.files.thumbnail) {
+    if (req.files && req.files.thumbnail) {
       thumbnail = req.files.thumbnail;
       parsedName = path.parse(thumbnail.name);
       fileName = `${parsedName.name}_${shortId.generate()}${parsedName.ext}`;
@@ -52,7 +52,7 @@ exports.createMovie = async (req, res, next) => {
 exports.editMovie = async (req, res, next) => {
   try {
     let thumbnail, parsedName, fileName, uploadPath;
-    if (req.files.thumbnail) {
+    if (req.files && req.files.thumbnail) {
       thumbnail = req.files.thumbnail;
       parsedName = path.parse(thumbnail.name);
       fileName = `${parsedName.name}_${shortId.generate()}${parsedName.ext}`;
@@ -61,7 +61,7 @@ exports.editMovie = async (req, res, next) => {
 
     const movie = await Movie.findOne({ _id: req.params.id }).catch((err) => {
       err.statusCode = 404;
-      err.message = "پستی با این شناسه یافت نشد";
+      err.message = " فیلمی با این شناسه یافت نشد";
       throw err;
     });
 
@@ -72,11 +72,11 @@ exports.editMovie = async (req, res, next) => {
 
     if (false) {
       //if (movie.user.toString() != req.userId) {
-      const error = new Error("شما مجوز ویرایش این پست را ندارید");
+      const error = new Error("شما مجوز ویرایش این  فیلم را ندارید");
       error.statusCode = 401;
       throw error;
     } else {
-      if (req.files.thumbnail) {
+      if (req.files && req.files.thumbnail) {
         fs.unlink(
           `${appRoot}/public/img/movies/${movie.thumbnail}`,
           async (err) => {
@@ -92,8 +92,12 @@ exports.editMovie = async (req, res, next) => {
           }
         );
       }
-      const { title, status, body } = req.body;
-      movie.title = title;
+      const { name,directors,writers,actors, status, body } = req.body;
+      
+      movie.name = name;
+      movie.directors = directors;
+      movie.writers = writers;
+      movie.actors = actors;
       movie.status = status;
       movie.body = body;
       movie.thumbnail = thumbnail.name ? fileName : movie.thumbnail;
@@ -113,7 +117,7 @@ exports.deleteMovie = async (req, res, next) => {
   try {
     const movie = await Movie.findByIdAndRemove(req.params.id).catch((err) => {
       err.statusCode = 404;
-      err.message = "پستی با این شناسه یافت نشد";
+      err.message = " فیلمی با این شناسه یافت نشد";
       throw err;
     });
 
@@ -121,7 +125,7 @@ exports.deleteMovie = async (req, res, next) => {
 
     fs.unlink(filePath, (err) => {
       if (err) {
-        const error = new Error("خطای در پاکسازی عکس پست مربوطه رخ داده است");
+        const error = new Error("خطای در حذف عکس فیلم مربوطه رخ داده است");
         error.statusCode = 400;
         throw error;
       } else {

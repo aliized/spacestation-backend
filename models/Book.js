@@ -8,6 +8,7 @@ const bookValidator = Yup.object().shape({
     .min(5, "نام کتاب نباید کمتر از 5 کارکتر باشد")
     .max(100, "نام کتاب نباید بیشتر از 100 کاراکتر باشد"),
   body: Yup.string().required("لطفا محتوایی درباره ی کتاب وارد کنید"),
+  writer: Yup.string().required("نام نویسنده الزامی می باشد"),
   thumbnail: Yup.object().shape({
     name: Yup.string().required("عکس کتاب الزامی می باشد"),
     size: Yup.number().max(3000000, "عکس نباید بیشتر از 3 مگابایت باشد"),
