@@ -1,9 +1,9 @@
 //% GET HomePageIndex
 //% GET Index ✔️
-//% GET single post ✔️
-//% GET movies
-//% GET books
-//% GET gallery
+//% GET post ✔️
+//% GET movies ✔️
+//% GET books ✔️
+//% GET gallery ✔️
 //* POST Comment
 //? PUT Comment
 //! DELETE Comment
@@ -13,6 +13,9 @@
 const Yup = require("yup");
 //const captchapng = require("captchapng");
 const Posts = require("../../models/Post");
+const Movies = require('../../models/Movie');
+const Books = require('../../models/Book');
+const Gallery = require('../../models/Gallery');
 //const { sendEmail } = require("../utils/mailer");
 
 let CAPTCHA_NUM;
@@ -61,41 +64,68 @@ exports.getSinglePost = async (req, res, next) => {
   }
 };
 
-// exports.handleContactPage = async (req, res, next) => {
-//     const { fullname, email, message } = req.body;
+exports.getMovies = async (req, res, next) => {
+  try {
+    const numberOfMovies = await Movies.find({
+      status: "public",
+    }).countDocuments();
 
-//     const schema = Yup.object().shape({
-//         fullname: Yup.string().required("نام و نام خانوادگی الزامی می باشد"),
-//         email: Yup.string()
-//             .email("آدرس ایمیل صحیح نیست")
-//             .required("آدرس ایمیل الزامی می باشد"),
-//         message: Yup.string().required("پیام اصلی الزامی می باشد"),
-//     });
+    const movies = await Movies.find({ status: "public" }).sort({
+      createdAt: "desc",
+    });
 
-//     try {
-//         await schema.validate(req.body, { abortEarly: false });
+    if (!movies) {
+      const error = new Error("هیچ فیلمی در پایگاه داده ثبت نشده است");
+      error.statusCode = 404;
+      throw error;
+    }
 
-//         sendEmail(
-//             email,
-//             fullname,
-//             "پیام از طرف وبلاگ",
-//             `${message} <br/> ایمیل کاربر : ${email}`
-//         );
+    res.status(200).json({ movies, total: numberOfMovies });
+  } catch (err) {
+    next(err);
+  }
+};
 
-//         res.status(200).json({ message: "پیام شما با موفقیت ارسال شد" });
-//     } catch (err) {
-//         next(err);
-//     }
-// };
+exports.getBooks = async (req, res, next) => {
+  try {
+    const numberOfBooks = await Books.find({
+      status: "public",
+    }).countDocuments();
 
-// exports.getCaptcha = (req, res) => {
-//     CAPTCHA_NUM = parseInt(Math.random() * 9000 + 1000);
-//     const p = new captchapng(80, 30, CAPTCHA_NUM);
-//     p.color(0, 0, 0, 0);
-//     p.color(80, 80, 80, 255);
+    const books = await Books.find({ status: "public" }).sort({
+      createdAt: "desc",
+    });
 
-//     const img = p.getBase64();
-//     const imgBase64 = Buffer.from(img, "base64");
+    if (!books) {
+      const error = new Error("هیچ فیلمی در پایگاه داده ثبت نشده است");
+      error.statusCode = 404;
+      throw error;
+    }
 
-//     res.send(imgBase64);
-// };
+    res.status(200).json({ books, total: numberOfBooks });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getGallery = async (req, res, next) => {
+  try {
+    const numberOfGallery = await Gallery.find({
+      status: "public",
+    }).countDocuments();
+
+    const gallery = await Gallery.find({ status: "public" }).sort({
+      createdAt: "desc",
+    });
+
+    if (!gallery) {
+      const error = new Error("هیچ فیلمی در پایگاه داده ثبت نشده است");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    res.status(200).json({ gallery, total: numberOfGallery });
+  } catch (err) {
+    next(err);
+  }
+};
