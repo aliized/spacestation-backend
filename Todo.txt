@@ -64,13 +64,13 @@ marahel:
 //% GET HomePageIndex
 //% GET Index ✔️
 //% GET single post ✔️
-//% GET movies
-//% GET books
-//% GET gallery
-//* POST Comment
-//? PUT Comment
-//! DELETE Comment
-//% GET Comments
+//% GET movies ✔️
+//% GET books ✔️
+//% GET gallery ✔️
+//* POST Comment ✔️
+//? PUT Comment ✔️
+//! DELETE Comment ✔️
+//% GET Comments ✔️
 
 =========userController:
 //* Create User POST /register
