@@ -18,7 +18,7 @@ exports.createPost = async (req, res, next) => {
     thumbnail = req.files.thumbnail;
     parsedName = path.parse(thumbnail.name);
     fileName = `${parsedName.name}_${shortId.generate()}${parsedName.ext}`;
-    uploadPath = `${appRoot}/public/uploads/thumbnails/${fileName}`;
+    uploadPath = `${appRoot}/public/img/blog/${fileName}`;
   }
 
   try {
@@ -57,7 +57,7 @@ exports.editPost = async (req, res, next) => {
       thumbnail = req.files.thumbnail;
       parsedName = path.parse(thumbnail.name);
       fileName = `${parsedName.name}_${shortId.generate()}${parsedName.ext}`;
-      uploadPath = `${appRoot}/public/uploads/thumbnails/${fileName}`;
+      uploadPath = `${appRoot}/public/img/blog/${fileName}`;
     }
     const post = await Post.findOne({ _id: req.params.id }).catch((err) => {
       err.statusCode = 404;
@@ -78,7 +78,7 @@ exports.editPost = async (req, res, next) => {
     } else {
       if (req.files && req.files.thumbnail) {
         fs.unlink(
-          `${appRoot}/public/uploads/thumbnails/${post.thumbnail}`,
+          `${appRoot}/public/img/blog/${post.thumbnail}`,
           async (err) => {
             if (err) {
               throw err;
@@ -116,9 +116,10 @@ exports.deletePost = async (req, res, next) => {
       err.statusCode = 404;
       err.message = "پستی با این شناسه یافت نشد";
       throw err;
+
     });
 
-    const filePath = `${appRoot}/public/uploads/thumbnails/${post.thumbnail}`;
+    const filePath = `${appRoot}/public/img/blog/${post.thumbnail}`;
 
     fs.unlink(filePath, (err) => {
       if (err) {

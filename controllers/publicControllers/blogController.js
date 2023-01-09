@@ -9,6 +9,7 @@
 //! DELETE Comment ✔️
 //% GET Comments
 
+const mongoose = require("mongoose");
 const appRoot = require("app-root-path");
 const modelsPath = `${appRoot}/models`;
 
@@ -28,7 +29,7 @@ exports.getIndex = async (req, res, next) => {
       status: "public",
     }).countDocuments();
 
-    const posts = await Posts.find({ status: "public" }).sort({
+    let posts = await Posts.find({ status: "public" }).sort({
       createdAt: "desc",
     });
 
@@ -37,6 +38,9 @@ exports.getIndex = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
+    // posts.forEach((post) => {
+    //   post.body = post.body.split(" ").slice(0, 180).join(" ");
+    // });
 
     res.status(200).json({ posts, total: numberOfPosts });
   } catch (err) {
@@ -46,7 +50,15 @@ exports.getIndex = async (req, res, next) => {
 
 exports.getSinglePost = async (req, res, next) => {
   try {
-    const post = await Posts.findOne({ _id: req.params.id, status: "public" });
+    let post;
+    if (mongoose.Types.ObjectId.isValid(req.params.id)) {
+      post = await Posts.findOne({
+        _id: req.params.id,
+        status: "public",
+      });
+    } else {
+      post = false;
+    }
     //???????? .populate(
     //     "user"
     // );

@@ -40,8 +40,8 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", require("./routes/blog"));
 app.use("/", require("./routes/statics"));
 app.use("/admin", require("./routes/admin"));
+app.use("/users", require("./routes/users"));
 
-// app.use("/users", require("./routes/users"));
 // app.use("/dashboard", require("./routes/dashboard"));
 
 
@@ -49,10 +49,11 @@ app.use("/admin", require("./routes/admin"));
 app.use((req,res)=>{res.send("404! NOT FOUND")});
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 9000;
 
 app.listen(PORT, () =>
     console.log(
         `Server running in ${process.env.NODE_ENV} mode on port ${PORT}`
     )
 );
+

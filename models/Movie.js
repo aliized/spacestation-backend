@@ -19,8 +19,8 @@ const movieValidator = Yup.object().shape({
     name: Yup.string().required("عکس فیلم الزامی می باشد"),
     size: Yup.number().max(3 * 1000000, "عکس نباید بیشتر از 3 مگابایت باشد"),
     mimetype: Yup.mixed().oneOf(
-      ["image/jpeg", "image/png"],
-      "تنها پسوندهای png و jpeg پشتیبانی می شوند"
+      ["image/jpeg", "image/png","image/webp"],
+      "تنها پسوندهای png و jpeg و webp پشتیبانی می شوند"
     ),
   }),
   

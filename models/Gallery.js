@@ -9,8 +9,8 @@ const galleryValidator = Yup.object().shape({
     name: Yup.string().required("عکس الزامی می باشد"),
     size: Yup.number().max(10 * 1000000, "عکس نباید بیشتر از 10 مگابایت باشد"),
     mimetype: Yup.mixed().oneOf(
-      ["image/jpeg", "image/png"],
-      "تنها پسوندهای png و jpeg پشتیبانی می شوند"
+      ["image/jpeg", "image/png","image/webp"],
+      "تنها پسوندهای png و jpeg و webp پشتیبانی می شوند"
     ),
   }),
   photoAlt: Yup.string()

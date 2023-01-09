@@ -46,15 +46,15 @@ router.get("/post/:id", getSinglePost);
 //  get single post
 
 //  @desc   add post comment
-//  @route  POST /post/add-comment/:postid
+//  @route  POST /post/add-comment/
 router.post("/post/add-comment", createComment);
 
-//  @desc   add post comment
-//  @route  POST /post/add-comment/:postid
+//  @desc   Edit Post Comment
+//  @route  POST /post/add-comment/:commentId
 router.put("/post/edit-comment/:id", editComment);
 
-//  @desc   add post comment
-//  @route  POST /post/add-comment/:postid
+//  @desc   Delete Post Comment
+//  @route  POST /post/add-comment/:commentId
 router.delete("/post/delete-comment/:id", deleteComment);
 
 //  @desc   get post comments
