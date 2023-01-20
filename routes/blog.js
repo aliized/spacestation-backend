@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const { authenticated } = require("../middlewares/auth");
 
 const {
   getIndex,
@@ -47,15 +48,15 @@ router.get("/post/:id", getSinglePost);
 
 //  @desc   add post comment
 //  @route  POST /post/add-comment/
-router.post("/post/add-comment", createComment);
+router.post("/post/add-comment",authenticated,  createComment);
 
 //  @desc   Edit Post Comment
 //  @route  POST /post/add-comment/:commentId
-router.put("/post/edit-comment/:id", editComment);
+router.put("/post/edit-comment/:id",authenticated,  editComment);
 
 //  @desc   Delete Post Comment
 //  @route  POST /post/add-comment/:commentId
-router.delete("/post/delete-comment/:id", deleteComment);
+router.delete("/post/delete-comment/:id",authenticated,  deleteComment);
 
 //  @desc   get post comments
 //  @route  POST /post/comments/:postid

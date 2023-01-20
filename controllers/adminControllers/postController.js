@@ -38,7 +38,7 @@ exports.createPost = async (req, res, next) => {
 
     await Post.create({
       ...req.body,
-      //user: req.userId,
+      user: req.userId,
       thumbnail: fileName,
     });
 

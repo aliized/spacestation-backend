@@ -1,28 +1,33 @@
 //* gal= Gallery
 
 const mongoose = require("mongoose");
-const Yup = require("Yup");
+const yup = require("yup");
 
-//* Yup Schema
-const galleryValidator = Yup.object().shape({
-  photo: Yup.object().shape({
-    name: Yup.string().required("عکس الزامی می باشد"),
-    size: Yup.number().max(10 * 1000000, "عکس نباید بیشتر از 10 مگابایت باشد"),
-    mimetype: Yup.mixed().oneOf(
-      ["image/jpeg", "image/png","image/webp"],
-      "تنها پسوندهای png و jpeg و webp پشتیبانی می شوند"
-    ),
+//* yup Schema
+const galleryValidator = yup.object().shape({
+  photo: yup.object().shape({
+    name: yup.string().required("عکس الزامی می باشد"),
+    size: yup.number().max(10 * 1000000, "عکس نباید بیشتر از 10 مگابایت باشد"),
+    mimetype: yup
+      .mixed()
+      .oneOf(
+        ["image/jpeg", "image/png", "image/webp"],
+        "تنها پسوندهای png و jpeg و webp پشتیبانی می شوند"
+      ),
   }),
-  photoAlt: Yup.string()
+  alt: yup
+    .string()
     .required("متن alt الزامی می باشد")
     .min(5, "متن alt نباید کمتر از 5 کارکتر باشد")
     .max(100, "متن alt نباید بیشتر از 100 کاراکتر باشد"),
-  photoDesc: Yup.string().required("لطفا توضیحی درباره ی عکس وارد کنید"),
-
-  status: Yup.mixed().oneOf(
-    ["private", "public"],
-    "یکی از 2 وضعیت خصوصی یا عمومی را انتخاب کنید"
-  ),
+  caption: yup.string().required("لطفا توضیحی درباره ی عکس وارد کنید"),
+  aspectRatio:yup.number().required(),
+  status: yup
+    .mixed()
+    .oneOf(
+      ["private", "public"],
+      "یکی از 2 وضعیت خصوصی یا عمومی را انتخاب کنید"
+    ),
 });
 
 //* Mongoose Schema
@@ -31,15 +36,19 @@ const gallerySchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  photoAlt: {
+  alt: {
     type: String,
     required: true,
     trim: true,
     minlength: 5,
     maxlength: 100,
   },
-  photoDesc: {
+  caption: {
     type: String,
+    required: true,
+  },
+  aspectRatio: {
+    type: Number,
     required: true,
   },
   status: {
@@ -47,18 +56,17 @@ const gallerySchema = new mongoose.Schema({
     default: "public",
     enum: ["private", "public"],
   },
-
-  //   user: {
-  //     type: mongoose.Schema.Types.ObjectId,
-  //     ref: "User",
-  //   },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
   createdAt: {
     type: Date,
     default: Date.now,
   },
 });
 
-//* add Yup validation method to mongoose statics
+//* add yup validation method to mongoose statics
 gallerySchema.statics.validation = function (body) {
   return galleryValidator.validate(body, { abortEarly: false });
 };

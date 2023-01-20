@@ -127,7 +127,13 @@ dist
 .pnp.*
 
 
-
-#?uploaded files
-public/uploads
-public/
+public/img/blog/*
+public/img/books/*
+public/img/gallery/*
+public/img/movies/*
+public/img/users/*
+!public/img/users/defaultPic.webp
+Todo.txt
+public/uploads/d1.jpg
+public/uploads/thumbnails/a_3Qwp2PTH7.png
+Todo.txt

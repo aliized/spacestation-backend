@@ -1,18 +1,18 @@
 const mongoose = require("mongoose");
-const Yup = require("Yup");
+const yup = require("yup");
 
-//* Yup Schema
-const commentValidator = Yup.object().shape({
-  body: Yup.string().required("لطفا محتوایی برای کامنت خود وارد کنید"), 
+//* yup Schema
+const commentValidator = yup.object().shape({
+  body: yup.string().required("لطفا محتوایی برای کامنت خود وارد کنید"),
 });
 
 //* Mongoose Schema
 const commentSchema = new mongoose.Schema({
-  postId: {
+  post: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Post",
+    ref:"Post"
   },
-  userId: {
+  user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
@@ -29,9 +29,10 @@ const commentSchema = new mongoose.Schema({
     default: "public",
     enum: ["private", "public"],
   },
+  
 });
 
-//* add Yup validation method to mongoose statics
+//* add yup validation method to mongoose statics
 commentSchema.statics.validation = function (body) {
   return commentValidator.validate(body, { abortEarly: false });
 };

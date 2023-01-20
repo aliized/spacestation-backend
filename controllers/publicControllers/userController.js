@@ -11,65 +11,92 @@ const User = require("../../models/User");
 const bcrypt = require("bcryptjs");
 const { sendEmail } = require("../../utils/mailer");
 
-exports.createUser = async (req, res, next) => {
+const makeToken = (userId) => {
+  const token = jwt.sign({ id: userId }, process.env.JWT_SECRET, {
+    expiresIn: "30d",
+  });
+  return token;
+};
+
+exports.register = async (req, res, next) => {
+  const { fullName, email, password } = req.body;
   try {
-    
-
-    await User.validation(req.body);
-    const { fullName, email, password } = req.body;
-
-    const user = await User.findOne({ email });
-    if (user) {
+    //* check user available
+    const userExists = await User.exists({ email });
+    if (userExists) {
       const error = new Error("کاربری با این ایمیل در پایگاه داده موجود است");
       error.statusCode = 422;
       throw error;
-    } else {
-      await User.create({ fullName, email, password });
-
-      //? Send Welcome Email
-      sendEmail(email, fullName, "به ایستگاه فضایی خوش اومدی", "ایستگاه فضایی");
-
-      res.status(201).json({ message: "عضویت موفقیت آمیز بود" });
     }
+
+    //* validate data
+    await User.validation(req.body);
+
+    const registeredUserCount = await User.count();
+    if (registeredUserCount === 0) {
+    }
+
+    //* create user
+    const user = await User.create({
+      fullName,
+      email,
+      password,
+      // phone,
+      role: registeredUserCount > 0 ? "USER" : "ADMIN",
+    });
+    sendEmail(email, fullName, "به ایستگاه فضایی خوش اومدی", "ایستگاه فضایی");
+
+    //* get user from database
+    const userObject = user.toObject();
+    Reflect.deleteProperty(userObject, "password");
+
+    //* make token
+    const token = makeToken(user._id);
+
+    //* pass data
+    res
+      .status(201)
+      .json({ token, user: userObject, message: "عضویت موفقیت آمیز بود" });
   } catch (err) {
     next(err);
   }
 };
 
-
 exports.handleLogin = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email });
+    //* check if user available
+    const user = await User.findOne({ email }).lean();
     if (!user) {
       const error = new Error("کاربری با این ایمیل یافت نشد");
       error.statusCode = 404;
       throw error;
     }
 
-    const isEqual = await bcrypt.compare(password, user.password);
-
-    if (isEqual) {
-      const token = jwt.sign(
-        {
-          user: {
-            userId: user._id.toString(),
-            email: user.email,
-            fullName: user.fullName,
-          },
-        },
-        process.env.JWT_SECRET
-      );
-      res.status(200).json({ token, userId: user._id.toString() });
-    } else {
-      const error = new Error("آدرس ایمیل یا کلمه عبور اشتباه است");
+    //* check password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      const error = new Error("کلمه عبور اشتباه است");
       error.statusCode = 422;
       throw error;
     }
+
+    //* delete user password and pass data
+    Reflect.deleteProperty(user, "password");
+
+    //* make token
+    const token = makeToken(user._id);
+
+    res.status(200).json({ token, user });
   } catch (err) {
     next(err);
   }
+};
+
+exports.getUser = async (req, res, next) => {
+  
+  return res.status(200).json(req.user);
 };
 
 exports.handleForgetPassword = async (req, res, next) => {
@@ -106,7 +133,6 @@ exports.handleForgetPassword = async (req, res, next) => {
     next(err);
   }
 };
-
 
 exports.handleResetPassword = async (req, res, next) => {
   const token = req.params.token;

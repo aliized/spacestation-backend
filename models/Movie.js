@@ -1,30 +1,30 @@
 const mongoose = require("mongoose");
-const Yup = require("Yup");
+const yup = require("yup");
 
-//* Yup Schema
-const movieValidator = Yup.object().shape({
-  name: Yup.string()
+//* yup Schema
+const movieValidator = yup.object().shape({
+  name: yup.string()
     .required("نام فیلم الزامی می باشد")
     .min(5, "نام فیلم نباید کمتر از 5 کارکتر باشد")
     .max(100, "نام فیلم نباید بیشتر از 100 کاراکتر باشد"),
 
-  body: Yup.string().required("لطفا محتوایی درباره ی فیلم وارد کنید"),
-  directors: Yup.string().required("نام کارگردان الزامی می باشد"),
+  body: yup.string().required("لطفا محتوایی درباره ی فیلم وارد کنید"),
+  directors: yup.string().required("نام کارگردان الزامی می باشد"),
 
-  writers: Yup.string().required("نام نویسندگان الزامی می باشد"),
+  writers: yup.string().required("نام نویسندگان الزامی می باشد"),
 
-  actors: Yup.string().required("نام بازیگران الزامی می باشد"),
+  actors: yup.string().required("نام بازیگران الزامی می باشد"),
 
-  thumbnail: Yup.object().shape({
-    name: Yup.string().required("عکس فیلم الزامی می باشد"),
-    size: Yup.number().max(3 * 1000000, "عکس نباید بیشتر از 3 مگابایت باشد"),
-    mimetype: Yup.mixed().oneOf(
-      ["image/jpeg", "image/png","image/webp"],
+  thumbnail: yup.object().shape({
+    name: yup.string().required("عکس فیلم الزامی می باشد"),
+    size: yup.number().max(3 * 1000000, "عکس نباید بیشتر از 3 مگابایت باشد"),
+    mimetype: yup.mixed().oneOf(
+      ["image/jpeg", "image/png", "image/webp"],
       "تنها پسوندهای png و jpeg و webp پشتیبانی می شوند"
     ),
   }),
-  
-  status: Yup.mixed().oneOf(
+
+  status: yup.mixed().oneOf(
     ["private", "public"],
     "یکی از 2 وضعیت خصوصی یا عمومی را انتخاب کنید"
   ),
@@ -64,10 +64,10 @@ const movieSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  // user: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: "User",
-  // },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -77,7 +77,7 @@ const movieSchema = new mongoose.Schema({
 //* for search indexing e125
 movieSchema.index({ name: "text" });
 
-//* add Yup validation method to mongoose statics
+//* add yup validation method to mongoose statics
 movieSchema.statics.validation = function (body) {
   return movieValidator.validate(body, { abortEarly: false });
 };

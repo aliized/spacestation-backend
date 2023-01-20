@@ -1,23 +1,23 @@
 const mongoose = require("mongoose");
-const Yup = require("Yup");
+const yup = require("yup");
 
-//* Yup Schema
-const bookValidator = Yup.object().shape({
-  name: Yup.string()
+//* yup Schema
+const bookValidator = yup.object().shape({
+  name: yup.string()
     .required("نام کتاب الزامی می باشد")
     .min(5, "نام کتاب نباید کمتر از 5 کارکتر باشد")
     .max(100, "نام کتاب نباید بیشتر از 100 کاراکتر باشد"),
-  body: Yup.string().required("لطفا محتوایی درباره ی کتاب وارد کنید"),
-  writer: Yup.string().required("نام نویسنده الزامی می باشد"),
-  thumbnail: Yup.object().shape({
-    name: Yup.string().required("عکس کتاب الزامی می باشد"),
-    size: Yup.number().max(3000000, "عکس نباید بیشتر از 3 مگابایت باشد"),
-    mimetype: Yup.mixed().oneOf(
-      ["image/jpeg", "image/png","image/webp"],
+  body: yup.string().required("لطفا محتوایی درباره ی کتاب وارد کنید"),
+  writer: yup.string().required("نام نویسنده الزامی می باشد"),
+  thumbnail: yup.object().shape({
+    name: yup.string().required("عکس کتاب الزامی می باشد"),
+    size: yup.number().max(3000000, "عکس نباید بیشتر از 3 مگابایت باشد"),
+    mimetype: yup.mixed().oneOf(
+      ["image/jpeg", "image/png", "image/webp"],
       "تنها پسوندهای png و jpeg و webp پشتیبانی می شوند"
     ),
   }),
-  status: Yup.mixed().oneOf(
+  status: yup.mixed().oneOf(
     ["private", "public"],
     "یکی از 2 وضعیت خصوصی یا عمومی را انتخاب کنید"
   ),
@@ -49,10 +49,10 @@ const bookSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  // user: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: "User",
-  // },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -62,7 +62,7 @@ const bookSchema = new mongoose.Schema({
 //* for search indexing e125
 bookSchema.index({ name: "text" });
 
-//* add Yup validation method to mongoose statics
+//* add yup validation method to mongoose statics
 bookSchema.statics.validation = function (body) {
   return bookValidator.validate(body, { abortEarly: false });
 };

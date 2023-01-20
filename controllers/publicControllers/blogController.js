@@ -121,21 +121,22 @@ exports.getBooks = async (req, res, next) => {
 
 exports.getGallery = async (req, res, next) => {
   try {
-    const numberOfGallery = await Gallery.find({
+    const totalPhotos = await Gallery.find({
       status: "public",
     }).countDocuments();
 
     const gallery = await Gallery.find({ status: "public" }).sort({
+      // aspectRatio: "asc",
       createdAt: "desc",
     });
 
     if (!gallery) {
-      const error = new Error("هیچ فیلمی در پایگاه داده ثبت نشده است");
+      const error = new Error("هیچ عکسی در پایگاه داده ثبت نشده است");
       error.statusCode = 404;
       throw error;
     }
 
-    res.status(200).json({ gallery, total: numberOfGallery });
+    res.status(200).json({ gallery, total: totalPhotos });
   } catch (err) {
     next(err);
   }
@@ -150,7 +151,9 @@ exports.createComment = async (req, res, next) => {
       throw err;
     });
 
-    await Comment.create(req.body);
+    const user = req.user._id;
+    // console.log(req.body);
+    await Comment.create({ ...req.body, user });
 
     res.status(201).json({ message: `کامنت جدید با موفقیت اضافه شد` });
   } catch (err) {
@@ -205,19 +208,22 @@ exports.deleteComment = async (req, res, next) => {
   }
 };
 
+
 exports.getComments = async (req, res, next) => {
+  // console.log(req.params.postId)
   try {
     const numberOfComments = await Comment.find({
       status: "public",
-      postId: req.params.postId,
+      post: req.params.postId,
     }).countDocuments();
 
     const comments = await Comment.find({
       status: "public",
-      postId: req.params.postId,
+      post: req.params.postId,
     }).sort({
       createdAt: "desc",
     });
+
 
     if (!comments) {
       const error = new Error("هیچ کامنتی برای این پست ثبت نشده است");

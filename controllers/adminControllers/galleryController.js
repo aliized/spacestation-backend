@@ -4,6 +4,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const sizeOf = require("image-size");
 
 const sharp = require("sharp");
 const shortId = require("shortid");
@@ -11,16 +12,23 @@ const appRoot = require("app-root-path");
 
 const Gallery = require("../../models/Gallery");
 
-exports.createPhoto = async (req, res, next) => {
+exports.addPhoto = async (req, res, next) => {
   let photo, parsedName, fileName, uploadPath;
 
-  if (req.files && req.files.photo) {
+  try {
+    if (!req.files || !req.files.photo) {
+      const err = new Error("عکس الزامی می باشد");
+      err.statusCode = 400;
+      throw err;
+    }
     photo = req.files.photo;
+
+    const imgSize = sizeOf(photo.data);
+    req.body.aspectRatio = (imgSize.width / imgSize.height).toFixed(2);
+
     parsedName = path.parse(photo.name);
     fileName = `${parsedName.name}_${shortId.generate()}${parsedName.ext}`;
     uploadPath = `${appRoot}/public/img/gallery/${fileName}`;
-  }
-  try {
     req.body = { ...req.body, photo };
 
     await Gallery.validation(req.body).catch((err) => {
@@ -37,15 +45,13 @@ exports.createPhoto = async (req, res, next) => {
 
     await Gallery.create({
       ...req.body,
-      //user: req.userId,
+      user: req.user,
       photo: fileName,
     });
 
-    res
-      .status(201)
-      .json({
-        message: `عکس ${req.body.photoAlt} با موفقیت به گالری اضافه شد`,
-      });
+    res.status(201).json({
+      message: `عکس ${req.body.alt} با موفقیت به گالری اضافه شد`,
+    });
   } catch (err) {
     next(err);
   }
@@ -54,12 +60,21 @@ exports.createPhoto = async (req, res, next) => {
 exports.editPhoto = async (req, res, next) => {
   try {
     let photo, parsedName, fileName, uploadPath;
-    if (req.files && req.files.photo) {
-      photo = req.files.photo;
-      parsedName = path.parse(photo.name);
-      fileName = `${parsedName.name}_${shortId.generate()}${parsedName.ext}`;
-      uploadPath = `${appRoot}/public/img/gallery/${fileName}`;
+
+    if (!req.files || !req.files.photo) {
+      const err = new Error("عکس الزامی می باشد");
+      err.statusCode = 400;
+      throw err;
     }
+
+    photo = req.files.photo;
+
+    const imgSize = sizeOf(photo.data);
+    req.body.aspectRatio = (imgSize.width / imgSize.height).toFixed(2);
+
+    parsedName = path.parse(photo.name);
+    fileName = `${parsedName.name}_${shortId.generate()}${parsedName.ext}`;
+    uploadPath = `${appRoot}/public/img/gallery/${fileName}`;
 
     const frame = await Gallery.findOne({ _id: req.params.id }).catch((err) => {
       err.statusCode = 404;
@@ -72,40 +87,30 @@ exports.editPhoto = async (req, res, next) => {
       throw err;
     });
 
-    if (false) {
-      //if (frame.user.toString() != req.userId) {
-      const error = new Error("شما مجوز ویرایش این عکس را ندارید");
-      error.statusCode = 401;
-      throw error;
-    } else {
-      if (req.files && req.files.photo) {
-        fs.unlink(
-          `${appRoot}/public/img/gallery/${frame.photo}`,
-          async (err) => {
-            if (err) throw err;
-            else {
-              await sharp(photo.data)
-                .jpeg({ quality: 100 })
-                .toFile(uploadPath)
-                .catch((err) => {
-                  throw err;
-                });
-            }
-          }
-        );
-      }
-      const { photoAlt, photoDesc, status } = req.body;
-      frame.photoAlt = photoAlt;
-      frame.photoDesc = photoDesc;
-      frame.status = status;
-      frame.photo = photo.name ? fileName : frame.photo;
-
-      await frame.save();
-
-      res
-        .status(200)
-        .json({ message: `عکس ${req.body.photoAlt} با موفقیت ویرایش شد` });
+    if (req.files && req.files.photo) {
+      fs.unlink(`${appRoot}/public/img/gallery/${frame.photo}`, async (err) => {
+        if (err) throw err;
+        else {
+          await sharp(photo.data)
+            .jpeg({ quality: 100 })
+            .toFile(uploadPath)
+            .catch((err) => {
+              throw err;
+            });
+        }
+      });
     }
+    const { alt, caption, status } = req.body;
+    frame.alt = alt;
+    frame.caption = caption;
+    frame.status = status;
+    frame.photo = photo.name ? fileName : frame.photo;
+
+    await frame.save();
+
+    res
+      .status(200)
+      .json({ message: `عکس ${req.body.alt} با موفقیت ویرایش شد` });
   } catch (err) {
     next(err);
   }
@@ -131,7 +136,7 @@ exports.deletePhoto = async (req, res, next) => {
       } else {
         res
           .status(200)
-          .json({ message: `عکس ${frame.photoAlt} با موفقیت از گالری حذف شد` });
+          .json({ message: `عکس ${frame.alt} با موفقیت از گالری حذف شد` });
       }
     });
   } catch (err) {
