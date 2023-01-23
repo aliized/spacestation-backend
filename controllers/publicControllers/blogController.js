@@ -11,6 +11,7 @@
 
 const mongoose = require("mongoose");
 const appRoot = require("app-root-path");
+const User = require("../../models/User");
 const modelsPath = `${appRoot}/models`;
 
 //const captchapng = require("captchapng");
@@ -182,7 +183,7 @@ exports.editComment = async (req, res, next) => {
       error.statusCode = 401;
       throw error;
     } else {
-      comment.body = req.body.body;
+      comment.message = req.body.message;
       await comment.save();
 
       res.status(200).json({ message: `کامنت شما با موفقیت ویرایش شد` });
@@ -208,28 +209,60 @@ exports.deleteComment = async (req, res, next) => {
   }
 };
 
-
 exports.getComments = async (req, res, next) => {
-  // console.log(req.params.postId)
+  console.log("start");
   try {
     const numberOfComments = await Comment.find({
       status: "public",
       post: req.params.postId,
     }).countDocuments();
 
-    const comments = await Comment.find({
+  
+
+    const commentsArray = await Comment.find({
       status: "public",
       post: req.params.postId,
     }).sort({
       createdAt: "desc",
     });
 
-
-    if (!comments) {
+    if (!commentsArray) {
       const error = new Error("هیچ کامنتی برای این پست ثبت نشده است");
       error.statusCode = 404;
       throw error;
     }
+
+    const comments = [];
+
+    for (const comment of commentsArray){
+      let user = await User.findById(comment.user);
+
+     comments.push( {
+        id: comment._id,
+        message: comment.message,
+        time: comment.createdAt,
+        user: {
+          fullName: user.fullName,
+          profilePic: user.profilePic,
+        },
+      })
+    }
+    console.log(comments)
+
+    // const asliz = await commentsArray.map( async (comment) => {
+     
+    // //   return {
+    //     id: comment._id,
+    //     message: comment.body,
+    //     time: comment.createdAt,
+    //     user: x
+    //     // user: {
+    //     //   fullName: userObject.fullName,
+    //     //   profilePic: userObject.profilePic,
+    //     // },
+    // //   };
+
+    // });
 
     res.status(200).json({ comments, total: numberOfComments });
   } catch (err) {

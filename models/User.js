@@ -41,7 +41,7 @@ userValidator = yup.object().shape({
 const userSchema = new mongoose.Schema({
   profilePic: {
     type: String,
-    default: 'UserProfile.jpg',
+    default: 'defaultPic.webp',
   },
   fullName: {
     type: String,

@@ -10,6 +10,10 @@ const jwt = require("jsonwebtoken");
 const User = require("../../models/User");
 const bcrypt = require("bcryptjs");
 const { sendEmail } = require("../../utils/mailer");
+const path = require("path");
+const shortid = require("shortid");
+const appRootPath = require("app-root-path");
+const sharp = require("sharp");
 
 const makeToken = (userId) => {
   const token = jwt.sign({ id: userId }, process.env.JWT_SECRET, {
@@ -29,18 +33,41 @@ exports.register = async (req, res, next) => {
       throw error;
     }
 
-    //* validate data
+    //?-----------------------
+
+    let profilePic, parsedName, fileName, uploadPath;
+
+    if (req.files && req.files.profilePic) {
+      profilePic = req.files.profilePic;
+      parsedName = path.parse(profilePic.name);
+      fileName = `${fullName}_${shortid.generate()}.webp`;
+      uploadPath = `${appRootPath}/public/img/users/${fileName}`;
+    }
+    req.body = { ...req.body, profilePic };
+
+    // //* validate data
     await User.validation(req.body);
 
-    const registeredUserCount = await User.count();
-    if (registeredUserCount === 0) {
+    if (profilePic) {
+      await sharp(profilePic.data)
+        .toFormat("webp")
+        .resize(180,180)
+        .webp({ effort: 6 })
+        .toFile(uploadPath)
+        .catch((err) => {
+          throw err;
+        });
     }
 
+
+    const registeredUserCount = await User.count();
+    
     //* create user
     const user = await User.create({
       fullName,
       email,
       password,
+      profilePic:fileName,
       // phone,
       role: registeredUserCount > 0 ? "USER" : "ADMIN",
     });
@@ -95,7 +122,6 @@ exports.handleLogin = async (req, res, next) => {
 };
 
 exports.getUser = async (req, res, next) => {
-  
   return res.status(200).json(req.user);
 };
 
@@ -168,3 +194,25 @@ exports.handleResetPassword = async (req, res, next) => {
     next(err);
   }
 };
+
+// if (req.files && req.files.thumbnail) {
+//   thumbnail = req.files.thumbnail;
+//   parsedName = path.parse(thumbnail.name);
+//   fileName = `${parsedName.name}_${shortId.generate()}${parsedName.ext}`;
+//   uploadPath = `${appRoot}/public/img/movies/${fileName}`;
+// }
+// req.body = { ...req.body, thumbnail };
+
+// await Movie.validation(req.body).catch((err) => {
+//   err.statusCode = 400;
+//   throw err;
+// });
+
+// await sharp(thumbnail.data)
+// .jpeg({ quality: 100 })
+// .toFile(uploadPath)
+// .catch((err) => {
+//   throw err;
+// });
+
+// // save file name
