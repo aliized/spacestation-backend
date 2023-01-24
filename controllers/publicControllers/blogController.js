@@ -14,7 +14,6 @@ const appRoot = require("app-root-path");
 const User = require("../../models/User");
 const modelsPath = `${appRoot}/models`;
 
-//const captchapng = require("captchapng");
 const Posts = require(`${modelsPath}/Post`);
 const Movies = require(`${modelsPath}/Movie`);
 const Books = require(`${modelsPath}/Book`);
@@ -39,9 +38,7 @@ exports.getIndex = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-    // posts.forEach((post) => {
-    //   post.body = post.body.split(" ").slice(0, 180).join(" ");
-    // });
+    
 
     res.status(200).json({ posts, total: numberOfPosts });
   } catch (err) {
@@ -127,7 +124,6 @@ exports.getGallery = async (req, res, next) => {
     }).countDocuments();
 
     const gallery = await Gallery.find({ status: "public" }).sort({
-      // aspectRatio: "asc",
       createdAt: "desc",
     });
 
@@ -152,11 +148,22 @@ exports.createComment = async (req, res, next) => {
       throw err;
     });
 
-    const user = req.user._id;
-    // console.log(req.body);
-    await Comment.create({ ...req.body, user });
+    const user = req.user;
+    const newComment = await Comment.create({ ...req.body, user: user._id });
 
-    res.status(201).json({ message: `کامنت جدید با موفقیت اضافه شد` });
+    const comment = {
+      id: newComment._id,
+      message: newComment.message,
+      time: newComment.createdAt,
+      parent: newComment.parent,
+      user: {
+        id: user._id,
+        fullName: user.fullName,
+        profilePic: user.profilePic,
+      },
+    };
+
+    res.status(201).json({ message: `کامنت جدید با موفقیت اضافه شد`, comment });
   } catch (err) {
     next(err);
   }
@@ -177,15 +184,13 @@ exports.editComment = async (req, res, next) => {
       throw err;
     });
 
-    if (false) {
-      //if (comment.user.toString() != req.userId) {
+    if (!comment.user.equals(req.user._id)) {
       const error = new Error("شما مجوز ویرایش این کامنت را ندارید");
       error.statusCode = 401;
       throw error;
     } else {
       comment.message = req.body.message;
       await comment.save();
-
       res.status(200).json({ message: `کامنت شما با موفقیت ویرایش شد` });
     }
   } catch (err) {
@@ -210,14 +215,11 @@ exports.deleteComment = async (req, res, next) => {
 };
 
 exports.getComments = async (req, res, next) => {
-  console.log("start");
   try {
     const numberOfComments = await Comment.find({
       status: "public",
       post: req.params.postId,
     }).countDocuments();
-
-  
 
     const commentsArray = await Comment.find({
       status: "public",
@@ -231,38 +233,21 @@ exports.getComments = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-
     const comments = [];
-
-    for (const comment of commentsArray){
+    for (const comment of commentsArray) {
       let user = await User.findById(comment.user);
-
-     comments.push( {
+      comments.push({
         id: comment._id,
         message: comment.message,
         time: comment.createdAt,
+        parent: comment.parent,
         user: {
+          id: user._id,
           fullName: user.fullName,
           profilePic: user.profilePic,
         },
-      })
+      });
     }
-    console.log(comments)
-
-    // const asliz = await commentsArray.map( async (comment) => {
-     
-    // //   return {
-    //     id: comment._id,
-    //     message: comment.body,
-    //     time: comment.createdAt,
-    //     user: x
-    //     // user: {
-    //     //   fullName: userObject.fullName,
-    //     //   profilePic: userObject.profilePic,
-    //     // },
-    // //   };
-
-    // });
 
     res.status(200).json({ comments, total: numberOfComments });
   } catch (err) {

@@ -20,6 +20,10 @@ const commentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  parent: {
+    type: mongoose.Schema.Types.ObjectId,
+    default: null,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
