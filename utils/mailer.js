@@ -14,7 +14,6 @@ const transporterDetails = smtpTransport({
   },
 });
 
-
 exports.sendEmail = (email, fullname, subject, message) => {
   // const transporter = nodeMailer.createTransport(transporterDetails);
   // transporter.sendMail({

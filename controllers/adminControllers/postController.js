@@ -116,7 +116,6 @@ exports.deletePost = async (req, res, next) => {
       err.statusCode = 404;
       err.message = "پستی با این شناسه یافت نشد";
       throw err;
-
     });
 
     const filePath = `${appRoot}/public/img/blog/${post.thumbnail}`;
@@ -136,8 +135,6 @@ exports.deletePost = async (req, res, next) => {
     next(err);
   }
 };
-
-
 
 // const fs = require("fs");
 // const path = require("path");

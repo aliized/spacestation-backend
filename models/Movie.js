@@ -3,7 +3,8 @@ const yup = require("yup");
 
 //* yup Schema
 const movieValidator = yup.object().shape({
-  name: yup.string()
+  name: yup
+    .string()
     .required("نام فیلم الزامی می باشد")
     .min(5, "نام فیلم نباید کمتر از 5 کارکتر باشد")
     .max(100, "نام فیلم نباید بیشتر از 100 کاراکتر باشد"),
@@ -18,16 +19,20 @@ const movieValidator = yup.object().shape({
   thumbnail: yup.object().shape({
     name: yup.string().required("عکس فیلم الزامی می باشد"),
     size: yup.number().max(3 * 1000000, "عکس نباید بیشتر از 3 مگابایت باشد"),
-    mimetype: yup.mixed().oneOf(
-      ["image/jpeg", "image/png", "image/webp"],
-      "تنها پسوندهای png و jpeg و webp پشتیبانی می شوند"
-    ),
+    mimetype: yup
+      .mixed()
+      .oneOf(
+        ["image/jpeg", "image/png", "image/webp"],
+        "تنها پسوندهای png و jpeg و webp پشتیبانی می شوند"
+      ),
   }),
 
-  status: yup.mixed().oneOf(
-    ["private", "public"],
-    "یکی از 2 وضعیت خصوصی یا عمومی را انتخاب کنید"
-  ),
+  status: yup
+    .mixed()
+    .oneOf(
+      ["private", "public"],
+      "یکی از 2 وضعیت خصوصی یا عمومی را انتخاب کنید"
+    ),
 });
 
 //* Mongoose Schema

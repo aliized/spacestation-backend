@@ -38,7 +38,6 @@ exports.getIndex = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-    
 
     res.status(200).json({ posts, total: numberOfPosts });
   } catch (err) {
@@ -236,17 +235,19 @@ exports.getComments = async (req, res, next) => {
     const comments = [];
     for (const comment of commentsArray) {
       let user = await User.findById(comment.user);
-      comments.push({
-        id: comment._id,
-        message: comment.message,
-        time: comment.createdAt,
-        parent: comment.parent,
-        user: {
-          id: user._id,
-          fullName: user.fullName,
-          profilePic: user.profilePic,
-        },
-      });
+      if (user) {
+        comments.push({
+          id: comment._id,
+          message: comment.message,
+          time: comment.createdAt,
+          parent: comment.parent,
+          user: {
+            id: user._id,
+            fullName: user.fullName,
+            profilePic: user.profilePic,
+          },
+        });
+      }
     }
 
     res.status(200).json({ comments, total: numberOfComments });

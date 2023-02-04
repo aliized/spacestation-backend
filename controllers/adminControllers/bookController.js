@@ -13,7 +13,6 @@ const Book = require("../../models/Book");
 
 exports.createBook = async (req, res, next) => {
   let thumbnail, parsedName, fileName, uploadPath;
- 
 
   if (req.files && req.files.thumbnail) {
     thumbnail = req.files.thumbnail;
@@ -93,7 +92,7 @@ exports.editBook = async (req, res, next) => {
           }
         );
       }
-      const { name,writer, status, body } = req.body;
+      const { name, writer, status, body } = req.body;
       book.name = name;
       book.writer = writer;
       book.status = status;
@@ -127,9 +126,7 @@ exports.deleteBook = async (req, res, next) => {
         error.statusCode = 400;
         throw error;
       } else {
-        res
-          .status(200)
-          .json({ message: `کتاب ${book.name} با موفقیت حذف شد` });
+        res.status(200).json({ message: `کتاب ${book.name} با موفقیت حذف شد` });
       }
     });
   } catch (err) {

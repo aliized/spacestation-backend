@@ -14,6 +14,7 @@ const path = require("path");
 const shortid = require("shortid");
 const appRootPath = require("app-root-path");
 const sharp = require("sharp");
+const fs = require("fs");
 
 const makeToken = (userId) => {
   const token = jwt.sign({ id: userId }, process.env.JWT_SECRET, {
@@ -33,8 +34,6 @@ exports.register = async (req, res, next) => {
       throw error;
     }
 
-    //?-----------------------
-
     let profilePic, parsedName, fileName, uploadPath;
 
     if (req.files && req.files.profilePic) {
@@ -51,7 +50,7 @@ exports.register = async (req, res, next) => {
     if (profilePic) {
       await sharp(profilePic.data)
         .toFormat("webp")
-        .resize(180,180)
+        .resize(180, 180)
         .webp({ effort: 6 })
         .toFile(uploadPath)
         .catch((err) => {
@@ -59,15 +58,14 @@ exports.register = async (req, res, next) => {
         });
     }
 
-
     const registeredUserCount = await User.count();
-    
+
     //* create user
     const user = await User.create({
       fullName,
       email,
       password,
-      profilePic:fileName,
+      profilePic: fileName,
       // phone,
       role: registeredUserCount > 0 ? "USER" : "ADMIN",
     });
@@ -87,6 +85,96 @@ exports.register = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+};
+
+exports.editProfilePic = async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    const user = await User.findById(userId);
+
+    //* check user available
+    if (!user) {
+      const error = new Error("لطفا ابتدا وارد حساب کاربری خود شوید");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    //* remove old profile pic
+    if (user.profilePic) {
+      const oldFilePath = `${appRootPath}/public/img/users/${user.profilePic}`;
+      if (user.profilePic !== null) {
+        fs.unlink(oldFilePath, (err) => {
+          if (err) {
+            const error = new Error("خطایی در حذف عکس کاربر رخ داده است");
+            error.statusCode = 400;
+            throw error;
+          }
+        });
+      }
+    }
+    let fileName = null;
+    if (req.files && req.files.profilePic) {
+      //* upload and save new pic
+      const profilePic = req.files.profilePic;
+      fileName = `${user.fullName}_${shortid.generate()}.webp`;
+      const uploadPath = `${appRootPath}/public/img/users/${fileName}`;
+      if (profilePic) {
+        await sharp(profilePic.data)
+          .toFormat("webp")
+          .resize(180, 180)
+          .webp({ effort: 6 })
+          .toFile(uploadPath)
+          .catch((err) => {
+            throw err;
+          });
+      }
+    }
+    //* save new pic address in user obj
+    user.profilePic = fileName ? fileName : null;
+
+    //* update user
+    const newUser = await user.save();
+
+    //* send response to clientside
+    const userObject = newUser.toObject();
+    Reflect.deleteProperty(userObject, "password");
+
+    //* pass data
+    res
+      .status(200)
+      .json({ user: userObject, message: "تغییر تصویر موفقیت آمیز بود" });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.editFullName = async (req, res, next) => {
+  const userId = req.user._id;
+  const user = await User.findById(userId);
+
+  //* check user available
+  if (!user) {
+    const error = new Error("لطفا ابتدا وارد حساب کاربری خود شوید");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  if (!req.body.fullName) {
+    const error = new Error("لطفا متنی برای نام وارد کنید");
+    error.statusCode = 422;
+    throw error;
+  }
+  user.fullName = req.body.fullName;
+  const newUser = await user.save();
+
+  //* send response to clientside
+  const userObject = newUser.toObject();
+  Reflect.deleteProperty(userObject, "password");
+
+  //* pass data
+  res
+    .status(200)
+    .json({ user: userObject, message: "تغییر نام موفقیت آمیز بود" });
 };
 
 exports.handleLogin = async (req, res, next) => {

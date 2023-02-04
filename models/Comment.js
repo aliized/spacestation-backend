@@ -10,7 +10,7 @@ const commentValidator = yup.object().shape({
 const commentSchema = new mongoose.Schema({
   post: {
     type: mongoose.Schema.Types.ObjectId,
-    ref:"Post"
+    ref: "Post",
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
@@ -33,7 +33,6 @@ const commentSchema = new mongoose.Schema({
     default: "public",
     enum: ["private", "public"],
   },
-  
 });
 
 //* add yup validation method to mongoose statics

@@ -14,6 +14,8 @@ exports.errorHandler = (error, req, res, next) => {
   }
 
   res.status(status).json({ message, data });
-console.log("======================================== ERROR HANDLER ========================================")
-console.log(error);
+  console.log(
+    "======================================== ERROR HANDLER ========================================"
+  );
+  console.log(error);
 };

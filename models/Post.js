@@ -3,7 +3,8 @@ const yup = require("yup");
 
 //* yup Schema
 const postValidator = yup.object().shape({
-  title: yup.string()
+  title: yup
+    .string()
     .required("عنوان پست الزامی می باشد")
     .min(5, "عنوان پست نباید کمتر از 5 کارکتر باشد")
     .max(100, "عنوان پست نباید بیشتر از 100 کاراکتر باشد"),
@@ -11,15 +12,19 @@ const postValidator = yup.object().shape({
   thumbnail: yup.object().shape({
     name: yup.string().required("عکس پست الزامی می باشد"),
     size: yup.number().max(3000000, "عکس نباید بیشتر از 3 مگابایت باشد"),
-    mimetype: yup.mixed().oneOf(
-      ["image/jpeg", "image/png", "image/webp"],
-      "تنها پسوندهای png و jpeg و webp پشتیبانی می شوند"
-    ),
+    mimetype: yup
+      .mixed()
+      .oneOf(
+        ["image/jpeg", "image/png", "image/webp"],
+        "تنها پسوندهای png و jpeg و webp پشتیبانی می شوند"
+      ),
   }),
-  status: yup.mixed().oneOf(
-    ["private", "public"],
-    "یکی از 2 وضعیت خصوصی یا عمومی را انتخاب کنید"
-  ),
+  status: yup
+    .mixed()
+    .oneOf(
+      ["private", "public"],
+      "یکی از 2 وضعیت خصوصی یا عمومی را انتخاب کنید"
+    ),
 });
 
 //* Mongoose Schema

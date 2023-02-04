@@ -21,7 +21,7 @@ const galleryValidator = yup.object().shape({
     .min(5, "متن alt نباید کمتر از 5 کارکتر باشد")
     .max(100, "متن alt نباید بیشتر از 100 کاراکتر باشد"),
   caption: yup.string().required("لطفا توضیحی درباره ی عکس وارد کنید"),
-  aspectRatio:yup.number().required(),
+  aspectRatio: yup.number().required(),
   status: yup
     .mixed()
     .oneOf(

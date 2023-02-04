@@ -92,8 +92,8 @@ exports.editMovie = async (req, res, next) => {
           }
         );
       }
-      const { name,directors,writers,actors, status, body } = req.body;
-      
+      const { name, directors, writers, actors, status, body } = req.body;
+
       movie.name = name;
       movie.directors = directors;
       movie.writers = writers;

@@ -31,17 +31,13 @@ userValidator = yup.object().shape({
     .string()
     .required("تکرار کلمه عبور الزامی می باشد")
     .oneOf([yup.ref("password"), null], "کلمه ی عبور و تکرار آن یکسان نیستند"),
-  role: yup
-    .mixed()
-    .oneOf(
-      ["ADMIN","CONTENTMANAGER", "USER"]
-    ),
+  role: yup.mixed().oneOf(["ADMIN", "CONTENTMANAGER", "USER"]),
 });
 
 const userSchema = new mongoose.Schema({
   profilePic: {
     type: String,
-    default: 'defaultPic.webp',
+    default: "defaultPic.webp",
   },
   fullName: {
     type: String,
@@ -64,7 +60,7 @@ const userSchema = new mongoose.Schema({
   role: {
     type: String,
     default: "USER",
-    enum: ["ADMIN","CONTENTMANAGER", "USER"],
+    enum: ["ADMIN", "CONTENTMANAGER", "USER"],
   },
   createdAt: {
     type: Date,
